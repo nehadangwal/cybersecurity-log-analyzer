@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # 1. DATABASE SERVICE
+  db:
+    image: postgres:15-alpine
+    container_name: log_analyzer_db
+    restart: always
+    environment:
+      # These credentials match the connection string in your __init__.py
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres # The default database name
+    ports:
+      # Only expose the port for debugging if necessary, it's not strictly needed for the app
+      - "5432:5432"
+    volumes:
+      # Persist data so it doesn't get lost when the container stops
+      - postgres_data:/var/lib/postgresql/data/
+
+  # 2. BACKEND SERVICE (Flask API)
+  backend:
+    build: 
+      context: ./backend # Assuming your Flask code is in a 'backend' directory
+      dockerfile: Dockerfile # You will need to create this file
+    container_name: log_analyzer_backend
+    command: sh -c "python3 wait_for_db.py && python3 run.py"
+    volumes:
+      - ./backend:/app # Mount your local code for development
+    ports:
+      - "5000:5000" # Expose the Flask port
+    depends_on:
+      - db
+    environment:
+      # Pass the correct connection string to the Flask app
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/postgres
+      FLASK_ENV: development
+      FLASK_APP: app # Or your app entry point
+
+volumes:
+  postgres_data:
