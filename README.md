@@ -176,9 +176,7 @@ docker-compose up --build -d
 - **Username**: admin
 - **Password**: password
 
-## 📋 Assignment Completion
-
-This project fulfills all requirements for the Tenex.ai Full-Stack Cybersecurity Application take-home assignment:
+## 📋 Project Completion
 
 - ✅ **Frontend**: Next.js 14 with TypeScript, responsive UI, authentication, file upload
 - ✅ **Backend**: Flask RESTful API with file processing and anomaly detection
